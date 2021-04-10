@@ -21,6 +21,7 @@ def get_obama_songs_2017():
             obamas_songs.append(song.text)
     return obamas_songs
 
+
 def get_obama_songs_2018():
     pass
 def get_obama_songs_2019():
