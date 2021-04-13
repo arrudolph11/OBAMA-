@@ -23,7 +23,15 @@ def get_obama_songs_2017():
 
 
 def get_obama_songs_2018():
-    pass
+    response = requests.get('https://www.rollingstone.com/music/music-news/barack-obama-2018-favorite-songs-list-773419/')
+    if response.ok:
+        obamas_songs = []
+        soup = BeautifulSoup(response.content, 'html.parser')
+        conts = soup.find_all('div', class_ = 'pmc-paywall')
+        for i in conts:
+            songs = conts.find('<p>', dir = )
+        #really not sure if im doing this right
+        
 def get_obama_songs_2019():
     pass
 def get_obama_songs_2020():
