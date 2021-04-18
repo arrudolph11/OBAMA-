@@ -8,32 +8,39 @@ import unittest
 #his playlist for 2016 would be hard to scrape I think, so maybe we should do 2017-2020 at least for now
 
 def get_obama_songs_2017():
-    #https://www.rollingstone.com/music/music-news/barack-obama-names-kendrick-lamar-jay-z-u2-to-2017-favorite-songs-list-253740/
-    #https://www.facebook.com/barackobama/posts/10155532677446749
-
-    response = requests.get('https://www.facebook.com/barackobama/posts/10155532677446749')
+    response = requests.get('https://www.businessinsider.com/obama-favorite-songs-2017-2018-1#blessed-by-daniel-caesar-3')
     if response.ok:
         obamas_songs = []
         soup = BeautifulSoup(response.content, 'html.parser')
-        paragraph = soup.find_all('div', class_ = 'o9v6fnle cxmmr5t8 oygrvhab hcukyx3x c1et5uql ii04i59q')
+        paragraph = soup.find_all('div', class_ = 'slide')
         for i in paragraph:
-            song = paragraph.find('div', dir = 'auto')
-            obamas_songs.append(song.text)
+            div = i.find('h2', class_ = 'slide-title-text')
+            obamas_songs.append(div.text)
     return obamas_songs
 
 
 def get_obama_songs_2018():
-    response = requests.get('https://www.rollingstone.com/music/music-news/barack-obama-2018-favorite-songs-list-773419/')
+    response = requests.get('https://www.businessinsider.com/obama-favorite-songs-2018-12')
     if response.ok:
         obamas_songs = []
         soup = BeautifulSoup(response.content, 'html.parser')
-        conts = soup.find_all('div', class_ = 'pmc-paywall')
-        for i in conts:
-            songs = conts.find('<p>', dir = )
-        #really not sure if im doing this right
+        paragraph = soup.find_all('div', class_ = 'slide')
+        for i in paragraph:
+            div = i.find('h2', class_ = 'slide-title-text')
+            obamas_songs.append(div.text)
+    return obamas_songs
         
 def get_obama_songs_2019():
-    pass
+    response = requests.get('https://www.cnn.com/2019/12/30/politics/barack-obama-favorite-music-2019-trnd/index.html')
+    if response.ok:
+        obamas_songs = []
+        soup = BeautifulSoup(response.content, 'html.parser')
+        uls = soup.find('ul', class_ = 'list__items list__items--ul')
+        lis = uls.find_all('li')
+        for li in lis:
+            obamas_songs.append(li.text)
+    return obamas_songs
+
 def get_obama_songs_2020():
     pass
 
@@ -63,7 +70,7 @@ def main():
     #year = input('What year do you want to see how mainstream Obama's music is?')
     #if year == 2017: songs = get_obama_songs_2017
 
-    print(get_spotify_playlist(2017))
+    print(get_obama_songs_2019())
 
 if __name__ == "__main__":
     main()
