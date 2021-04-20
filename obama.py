@@ -1,5 +1,5 @@
-#SI206 FINAL PROJECT
-#Team Obama: Claire Weadock and Amanda Rudolph
+#SI 206 Final Project
+#Team OBAMA: Claire Weadock and Amanda Rudolph
 
 from bs4 import BeautifulSoup
 import requests
@@ -45,7 +45,12 @@ def get_obama_songs_2019():
     return obamas_songs
 
 def get_obama_songs_2020():
-    pass
+    response = requests,get('https://www.nme.com/news/music/barack-obama-shares-his-top-songs-of-2020-with-new-spotify-playlist-2842698')
+    if response.ok:
+        obamas_songs = []
+        soup = BeautifulSoup(response.content, 'html.parser')
+        paragraph = soup.find_all('div', class_ = '#not sure what to put here....')
+        for i in pragaraph:
 
 #use requests, Spotify API gets spotify playlist for each year
 #can't figure out how to use access token: BQA3-OIYlKUL8QUpXZPoOXBUzTygpRar5OoWeRWDHs3Rv0xrdVrgtyMwR6zNEB89ZyU_Qg0R2IZ2MYYpwjK8Q3JLlZy0_LVa4QWz1cjErGoy4V_VWLONlhKDKFTfmBlPTfqNQ5dSNKPFzqoxXA
@@ -74,7 +79,7 @@ def compare_obama_to_spotify(obamadict, spotifydict):
     #spotifys top songs for that year
 
     #loop through each year for both dicts, find commonalities
-    #im being dumb rn how do i do this 
+    #im being dumb rn how do i do this
 .
 def main():
     #driver program here
