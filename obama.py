@@ -1,3 +1,6 @@
+#SI206 FINAL PROJECT
+#Team Obama: Claire Weadock and Amanda Rudolph
+
 from bs4 import BeautifulSoup
 import requests
 import re
@@ -62,13 +65,23 @@ def get_playlist_id(year):
 
 #idk calculate popularity of each song, based on either the score from Spotify API or we could do the number rank it is on the Spotify playlist
 def calc_song_pop(song):
-    pass
 
+def compare_obama_to_spotify(obamadict, spotifydict):
+    #obamadict is a dictionary where the key is the year, and the values are 
+    #obamas songs for that year
+
+    #spotifydict is a dictionary where the key is the year, and the values are
+    #spotifys top songs for that year
+
+    #loop through each year for both dicts, find commonalities
+    #im being dumb rn how do i do this 
+.
 def main():
     #driver program here
     #make it interactive with user input a year
     #year = input('What year do you want to see how mainstream Obama's music is?')
-    #if year == 2017: songs = get_obama_songs_2017
+    #if year == 2017: # songs = get_obama_songs_2017
+    #if
 
     print(get_obama_songs_2019())
 
