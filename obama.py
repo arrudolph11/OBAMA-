@@ -3,6 +3,9 @@ import requests
 import re
 import json
 import unittest
+import spotipy
+from spotipy.oauth2 import SpotifyClientCredentials
+
 
 #honestly might need a function for each year, since the source isn't in the same format
 #his playlist for 2016 would be hard to scrape I think, so maybe we should do 2017-2020 at least for now
@@ -50,6 +53,8 @@ def get_obama_songs_2020():
         tags = soup_find_all('<p>')
         for tag in tags:
             print(tag.text) # really don't know if im doing this right
+
+
 
 #use requests, Spotify API gets spotify playlist for each year
 #can't figure out how to use access token: BQA3-OIYlKUL8QUpXZPoOXBUzTygpRar5OoWeRWDHs3Rv0xrdVrgtyMwR6zNEB89ZyU_Qg0R2IZ2MYYpwjK8Q3JLlZy0_LVa4QWz1cjErGoy4V_VWLONlhKDKFTfmBlPTfqNQ5dSNKPFzqoxXA
