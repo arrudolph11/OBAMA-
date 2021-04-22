@@ -6,6 +6,11 @@ import unittest
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 
+client_id = 'd349d9ffeed74f7894652895e7e25437'
+client_secret = 'd89d0fbc75bf40aa8d717fd09564b98d'
+
+client_credentials_manager = SpotifyClientCredentials(client_id, client_secret)
+sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
 #honestly might need a function for each year, since the source isn't in the same format
 #his playlist for 2016 would be hard to scrape I think, so maybe we should do 2017-2020 at least for now
@@ -45,12 +50,12 @@ def get_obama_songs_2019():
     return obamas_songs
 
 def get_obama_songs_2020():
-    response = requests,get('https://www.nme.com/news/music/barack-obama-shares-his-top-songs-of-2020-with-new-spotify-playlist-2842698')
+    response = requests.get('https://www.nme.com/news/music/barack-obama-shares-his-top-songs-of-2020-with-new-spotify-playlist-2842698')
     if response.ok:
         obamas_songs = []
         soup = BeautifulSoup(response.content, 'html.parser')
         #paragraph = soup.find_all('div', class_ = 'td-a-ad id_inline_ad0.id_ad_content-horiz-center')
-        tags = soup_find_all('<p>')
+        tags = soup.find_all('<p>')
         for tag in tags:
             print(tag.text) # really don't know if im doing this right
 
@@ -73,6 +78,7 @@ def get_playlist_id(year):
 
 #idk calculate popularity of each song, based on either the score from Spotify API or we could do the number rank it is on the Spotify playlist
 def calc_song_pop(song):
+    pass
 
 def compare_obama_to_spotify(obamadict, spotifydict):
     #obamadict is a dictionary where the key is the year, and the values are 
@@ -83,7 +89,26 @@ def compare_obama_to_spotify(obamadict, spotifydict):
 
     #loop through each year for both dicts, find commonalities
     #im being dumb rn how do i do this
-.
+    pass
+
+def getTrackNames(year, playlist_id):
+    track_names = []
+    playlist = sp.user_playlist()
+    for item in playlist['tracks']['items']:
+        track = item['track']
+        ids.append(track['track_name'])
+    return track_names
+
+def create_table(cur, conn):
+    #cur.execute('DROP TABLE IF EXISTS Patients')
+    #for lists, make into long strings
+    cur.execute('CREATE TABLE IF NOT EXISTS Songs ("Year" TEXT PRIMARY KEY, "Obama\'s Top Songs" TEXT, "Spotify\'s Top Songs" TEXT, "Songs in Common" TEXT, "Number of Songs in Common" INTEGER)')
+    conn.commit()
+
+def insert_obama(obamas_songs, cur, conn):
+    str1 = ','.join(obamas_songs)
+    cur.execute('INSERT INTO Songs (Obama\'s Top Songs) VALUES (str1)')
+
 def main():
     #driver program here
     #make it interactive with user input a year
