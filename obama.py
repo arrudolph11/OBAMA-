@@ -1,6 +1,3 @@
-#SI 206 Final Project
-#Team OBAMA: Claire Weadock and Amanda Rudolph
-
 from bs4 import BeautifulSoup
 import requests
 import re
@@ -49,8 +46,10 @@ def get_obama_songs_2020():
     if response.ok:
         obamas_songs = []
         soup = BeautifulSoup(response.content, 'html.parser')
-        paragraph = soup.find_all('div', class_ = '#not sure what to put here....')
-        for i in pragaraph:
+        #paragraph = soup.find_all('div', class_ = 'td-a-ad id_inline_ad0.id_ad_content-horiz-center')
+        tags = soup_find_all('<p>')
+        for tag in tags:
+            print(tag.text) # really don't know if im doing this right
 
 #use requests, Spotify API gets spotify playlist for each year
 #can't figure out how to use access token: BQA3-OIYlKUL8QUpXZPoOXBUzTygpRar5OoWeRWDHs3Rv0xrdVrgtyMwR6zNEB89ZyU_Qg0R2IZ2MYYpwjK8Q3JLlZy0_LVa4QWz1cjErGoy4V_VWLONlhKDKFTfmBlPTfqNQ5dSNKPFzqoxXA
@@ -58,7 +57,6 @@ def get_spotify_playlist(year):
     base_url = 'https://api.spotify.com/v1/playlists/{}/tracks'
     playlist_id = get_playlist_id(year)
     request_url = base_url.format(playlist_id)
-
     r = requests.get(request_url)
     data = r.text
 
