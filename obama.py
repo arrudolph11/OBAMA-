@@ -3,14 +3,14 @@ import requests
 import re
 import json
 import unittest
-#import spotipy
-#from spotipy.oauth2 import SpotifyClientCredentials
+import spotipy
+from spotipy.oauth2 import SpotifyClientCredentials
 
 client_id = 'd349d9ffeed74f7894652895e7e25437'
 client_secret = 'd89d0fbc75bf40aa8d717fd09564b98d'
 
-# client_credentials_manager = SpotifyClientCredentials(client_id, client_secret)
-# sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
+client_credentials_manager = SpotifyClientCredentials(client_id, client_secret)
+sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
 #honestly might need a function for each year, since the source isn't in the same format
 #his playlist for 2016 would be hard to scrape I think, so maybe we should do 2017-2020 at least for now
@@ -24,7 +24,14 @@ def get_obama_songs_2017():
         for i in paragraph:
             div = i.find('h2', class_ = 'slide-title-text')
             obamas_songs.append(div.text)
-    return obamas_songs
+
+        regged = []
+        reg_exp = r'\"(\b.+\b)\"\sby\s.+'
+        for i in obamas_songs:
+            x = re.findall(reg_exp, i)
+            for i in x:
+                regged.append(i)
+    return regged
 
 
 def get_obama_songs_2018():
@@ -36,7 +43,13 @@ def get_obama_songs_2018():
         for i in paragraph:
             div = i.find('h2', class_ = 'slide-title-text')
             obamas_songs.append(div.text)
-    return obamas_songs
+        regged = []
+        reg_exp = r'\"(\b.+\b)\"\sby\s.+'
+        for i in obamas_songs:
+            x = re.findall(reg_exp, i)
+            for i in x:
+                regged.append(i)
+    return regged
         
 def get_obama_songs_2019():
     response = requests.get('https://www.cnn.com/2019/12/30/politics/barack-obama-favorite-music-2019-trnd/index.html')
@@ -47,7 +60,14 @@ def get_obama_songs_2019():
         lis = uls.find_all('li')
         for li in lis:
             obamas_songs.append(li.text)
-    return obamas_songs
+    #return obamas_songs
+        regged = []
+        reg_exp = r'\"(\b.+\b)\"\sby\s.+'
+        for i in obamas_songs:
+            x = re.findall(reg_exp, i)
+            for i in x:
+                regged.append(i)
+    return regged
 
 def get_obama_songs_2020():
     response = requests.get('https://www.cnn.com/2020/12/19/politics/barack-obama-2020-favorite-songs/index.html')
@@ -60,7 +80,6 @@ def get_obama_songs_2020():
         return obamas_songs[3:]
 
 
-
 #use requests, Spotify API gets spotify playlist for each year
 #can't figure out how to use access token: BQA3-OIYlKUL8QUpXZPoOXBUzTygpRar5OoWeRWDHs3Rv0xrdVrgtyMwR6zNEB89ZyU_Qg0R2IZ2MYYpwjK8Q3JLlZy0_LVa4QWz1cjErGoy4V_VWLONlhKDKFTfmBlPTfqNQ5dSNKPFzqoxXA
 def get_spotify_playlist(year):
@@ -69,7 +88,6 @@ def get_spotify_playlist(year):
     request_url = base_url.format(playlist_id)
     r = requests.get(request_url)
     data = r.text
-
     return data
 
 def get_playlist_id(year):
@@ -100,14 +118,15 @@ def compare_obama_to_spotify(obamadict, spotifydict):
         common_songs[i[0]] = lst
     return common_songs
 
-#need to work on this
-def getTrackNames(year, playlist_id):
-    track_names = []
-    playlist = sp.user_playlist()
-    for item in playlist['tracks']['items']:
-        track = item['track']
-        ids.append(track['track_name'])
-    return track_names
+#works, gives song name ex. 'Shape of You'
+def get_playlist_tracks(year):
+    tracks = []
+    playlist_id = get_playlist_id(year)
+    results = sp.playlist_tracks(playlist_id, limit = 100)
+    for i in results['items']:
+        tracks.append(i['track']['name'])
+
+    return tracks
 
 def create_table(cur, conn):
     #cur.execute('DROP TABLE IF EXISTS Patients')
@@ -125,13 +144,19 @@ def main():
     #make it interactive with user input a year
     #year = input('What year do you want to see how mainstream Obama's music is?')
     #if year == 2017: # songs = get_obama_songs_2017
-    #if
 
-    #print(get_obama_songs_2020())
+    print(get_obama_songs_2019())
+
+    #print(get_playlist_tracks(2017))
 
     #test compare_obama_to_spotify
-    obamadict = {'2017':['On Me by Lil Baby', 'Leaked by Lil Baby']}#, '2018': 'Errbody by Lil Baby', '2019':'Sun Came out by Gunna'}
-    spotifydict = {'2017':['On Me by Lil Baby', 'Leaked by Lil Baby']}#, '2018': 'Savage by Megan Thee Stallion', '2019':'Sun Came out by Gunna'}
+    #obamadict = {'2017':['On Me by Lil Baby', 'Leaked by Lil Baby'], '2018': ['Errbody by Lil Baby', 'Savage by Megan Thee Stallion'], '2019':['Sun Came out by Gunna','Time Flies by Drake']}
+    #spotifydict = {'2017':['On Me by Lil Baby', 'Leaked by Lil Baby'], '2018': ['Savage by Megan Thee Stallion', 'Redemption by Drake'], '2019':['Time Flies by Drake','Sun Came out by Gunna']}
+    #print(compare_obama_to_spotify(obamadict, spotifydict))
+
+    obamadict = {'2019': get_obama_songs_2019()}
+    spotifydict = {'2019': get_playlist_tracks(2019)}
+
     print(compare_obama_to_spotify(obamadict, spotifydict))
 
 if __name__ == "__main__":
