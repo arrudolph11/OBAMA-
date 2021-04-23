@@ -3,14 +3,14 @@ import requests
 import re
 import json
 import unittest
-import spotipy
-from spotipy.oauth2 import SpotifyClientCredentials
+#import spotipy
+#from spotipy.oauth2 import SpotifyClientCredentials
 
 client_id = 'd349d9ffeed74f7894652895e7e25437'
 client_secret = 'd89d0fbc75bf40aa8d717fd09564b98d'
 
-client_credentials_manager = SpotifyClientCredentials(client_id, client_secret)
-sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
+# client_credentials_manager = SpotifyClientCredentials(client_id, client_secret)
+# sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
 #honestly might need a function for each year, since the source isn't in the same format
 #his playlist for 2016 would be hard to scrape I think, so maybe we should do 2017-2020 at least for now
@@ -50,14 +50,14 @@ def get_obama_songs_2019():
     return obamas_songs
 
 def get_obama_songs_2020():
-    response = requests.get('https://www.nme.com/news/music/barack-obama-shares-his-top-songs-of-2020-with-new-spotify-playlist-2842698')
+    response = requests.get('https://www.cnn.com/2020/12/19/politics/barack-obama-2020-favorite-songs/index.html')
     if response.ok:
         obamas_songs = []
         soup = BeautifulSoup(response.content, 'html.parser')
-        #paragraph = soup.find_all('div', class_ = 'td-a-ad id_inline_ad0.id_ad_content-horiz-center')
-        tags = soup.find_all('<p>')
-        for tag in tags:
-            print(tag.text) # really don't know if im doing this right
+        first_song = soup.find_all('div', class_ = 'zn-body__paragraph')
+        for i in first_song:
+            obamas_songs.append(i.text)
+        return obamas_songs[3:]
 
 
 
@@ -80,6 +80,7 @@ def get_playlist_id(year):
 def calc_song_pop(song):
     pass
 
+#done with this one,
 def compare_obama_to_spotify(obamadict, spotifydict):
     #obamadict is a dictionary where the key is the year, and the values are 
     #obamas songs for that year
@@ -87,10 +88,19 @@ def compare_obama_to_spotify(obamadict, spotifydict):
     #spotifydict is a dictionary where the key is the year, and the values are
     #spotifys top songs for that year
 
-    #loop through each year for both dicts, find commonalities
-    #im being dumb rn how do i do this
-    pass
+    #key = year, value = list of shared songs
+    common_songs = {}
 
+    for i in obamadict.items():
+        lst = []
+        for j in spotifydict.items():
+            for song in i[1]:
+                if song in j[1]:
+                    lst.append(song)
+        common_songs[i[0]] = lst
+    return common_songs
+
+#need to work on this
 def getTrackNames(year, playlist_id):
     track_names = []
     playlist = sp.user_playlist()
@@ -105,6 +115,7 @@ def create_table(cur, conn):
     cur.execute('CREATE TABLE IF NOT EXISTS Songs ("Year" TEXT PRIMARY KEY, "Obama\'s Top Songs" TEXT, "Spotify\'s Top Songs" TEXT, "Songs in Common" TEXT, "Number of Songs in Common" INTEGER)')
     conn.commit()
 
+#need to work on this
 def insert_obama(obamas_songs, cur, conn):
     str1 = ','.join(obamas_songs)
     cur.execute('INSERT INTO Songs (Obama\'s Top Songs) VALUES (str1)')
@@ -116,7 +127,12 @@ def main():
     #if year == 2017: # songs = get_obama_songs_2017
     #if
 
-    print(get_obama_songs_2019())
+    #print(get_obama_songs_2020())
+
+    #test compare_obama_to_spotify
+    obamadict = {'2017':['On Me by Lil Baby', 'Leaked by Lil Baby']}#, '2018': 'Errbody by Lil Baby', '2019':'Sun Came out by Gunna'}
+    spotifydict = {'2017':['On Me by Lil Baby', 'Leaked by Lil Baby']}#, '2018': 'Savage by Megan Thee Stallion', '2019':'Sun Came out by Gunna'}
+    print(compare_obama_to_spotify(obamadict, spotifydict))
 
 if __name__ == "__main__":
     main()
