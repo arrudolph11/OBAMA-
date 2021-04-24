@@ -1,3 +1,8 @@
+# SI 206 Final Project
+# By Amanda Rudolph and Claire Weadock
+# Team Name: Obama
+
+
 from bs4 import BeautifulSoup
 import requests
 import re
@@ -5,6 +10,15 @@ import json
 import unittest
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
+import matplotlib.pyplot as plt #importing visualization package
+
+#code to test visualization:
+# import seaborn as sns
+# df = sns.load_dataset("penguins")
+# sns.pairplot(df, hue="species")
+
+seaborn.scatterplot(*, x=None, y=None, hue=None, style=None, size=None, data=None, palette=None, more...)
+
 
 client_id = 'd349d9ffeed74f7894652895e7e25437'
 client_secret = 'd89d0fbc75bf40aa8d717fd09564b98d'
@@ -128,6 +142,8 @@ def get_playlist_tracks(year):
 
     return tracks
 
+#making database
+
 def create_table(cur, conn):
     #cur.execute('DROP TABLE IF EXISTS Patients')
     #for lists, make into long strings
@@ -159,5 +175,6 @@ def main():
 
     print(compare_obama_to_spotify(obamadict, spotifydict))
 
+#starting visualization
 if __name__ == "__main__":
     main()
