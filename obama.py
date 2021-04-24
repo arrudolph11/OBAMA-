@@ -12,13 +12,11 @@ import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 import matplotlib.pyplot as plt #importing visualization package
 
-#code to test visualization:
-# import seaborn as sns
-# df = sns.load_dataset("penguins")
-# sns.pairplot(df, hue="species")
 
-seaborn.scatterplot(*, x=None, y=None, hue=None, style=None, size=None, data=None, palette=None, more...)
 
+#making bar plot
+matplotlib.pyplot.bar(x, year, width=0.8, )
+plt.bar(year, obama_and_spotify_commonalities, insertvalues)
 
 client_id = 'd349d9ffeed74f7894652895e7e25437'
 client_secret = 'd89d0fbc75bf40aa8d717fd09564b98d'
