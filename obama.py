@@ -10,6 +10,7 @@ import json
 import unittest
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
+import matplotlib
 import matplotlib.pyplot as plt #importing visualization package
 
 
