@@ -104,22 +104,11 @@ def get_obama_songs_2018():
     return regged
         
 def get_obama_songs_2019():
-    response = requests.get('https://www.cnn.com/2019/12/30/politics/barack-obama-favorite-music-2019-trnd/index.html')
-    if response.ok:
-        obamas_songs = []
-        soup = BeautifulSoup(response.content, 'html.parser')
-        uls = soup.find('ul', class_ = 'list__items list__items--ul')
-        lis = uls.find_all('li')
-        for li in lis:
-            obamas_songs.append(li.text)
-    #return obamas_songs
-        regged = []
-        reg_exp = r'\"(.+)\"\s'
-        for i in obamas_songs:
-            x = re.findall(reg_exp, i)
-            for i in x:
-                regged.append(i)
-    return regged
+    tracks = []
+    results = sp.playlist_tracks('37i9dQZF1DX9uhxIrnqGy3', limit = 100)
+    for i in results['items']:
+        tracks.append(i['track']['name'])
+    return tracks
 
 def get_obama_songs_2020():
     response = requests.get('https://www.cnn.com/2020/12/19/politics/barack-obama-2020-favorite-songs/index.html')
@@ -137,19 +126,8 @@ def get_obama_songs_2020():
                 regged.append(i)
     return regged
 
-
-#use requests, Spotify API gets spotify playlist for each year
-#can't figure out how to use access token: BQA3-OIYlKUL8QUpXZPoOXBUzTygpRar5OoWeRWDHs3Rv0xrdVrgtyMwR6zNEB89ZyU_Qg0R2IZ2MYYpwjK8Q3JLlZy0_LVa4QWz1cjErGoy4V_VWLONlhKDKFTfmBlPTfqNQ5dSNKPFzqoxXA
-def get_spotify_playlist(year):
-    base_url = 'https://api.spotify.com/v1/playlists/{}/tracks'
-    playlist_id = get_playlist_id(year)
-    request_url = base_url.format(playlist_id)
-    r = requests.get(request_url)
-    data = r.text
-    return data
-
 def get_playlist_id(year):
-    switcher = {2017: '37i9dQZF1DWTE7dVUebpUW', 2018: '37i9dQZF1DX1HUbZS4LEyL', 2019: '37i9dQZF1DXcz8eC5kMSWZ', 2020: '37i9dQZF1DX7Jl5KP2eZaS'}
+    switcher = {2017: '37i9dQZF1DWTE7dVUebpUW', 2018: '37i9dQZF1DX1HUbZS4LEyL', 2019: '37i9dQZF1DWVRSukIED0e9', 2020: '37i9dQZF1DX7Jl5KP2eZaS'}
     return switcher.get(year, "Invalid year")
 
 #idk calculate popularity of each song, based on either the score from Spotify API or we could do the number rank it is on the Spotify playlist
@@ -159,17 +137,17 @@ def calc_song_pop(song):
 def total_songs_in_common():
     total = 0
 
-    # #2017
-    # o2017 = get_dict('2017', get_obama_songs_2017())
-    # s2017 = get_dict('2017', get_playlist_tracks(2017))
-    # sh2017 = compare_obama_to_spotify(o2017, s2017)
-    # total += len(sh2017['2017'])
+    #2017
+    o2017 = get_dict('2017', get_obama_songs_2017())
+    s2017 = get_dict('2017', get_playlist_tracks(2017))
+    sh2017 = compare_obama_to_spotify(o2017, s2017)
+    total += len(sh2017['2017'])
 
     # #2018
-    # o2018 = get_dict('2018', get_obama_songs_2018())
-    # s2018 = get_dict('2018', get_playlist_tracks(2018))
-    # sh2018 = compare_obama_to_spotify(o2018, s2018)
-    # total += len(sh2018['2018'])
+    o2018 = get_dict('2018', get_obama_songs_2018())
+    s2018 = get_dict('2018', get_playlist_tracks(2018))
+    sh2018 = compare_obama_to_spotify(o2018, s2018)
+    total += len(sh2018['2018'])
 
     #2019
     o2019 = get_dict('2019', get_obama_songs_2019())
@@ -178,23 +156,10 @@ def total_songs_in_common():
     total += len(sh2019['2019'])
 
     # #2020
-    # o2020 = get_dict('2020', get_obama_songs_2020())
-    # s2020 = get_dict('2020', get_playlist_tracks(2020))
-    # sh2020 = compare_obama_to_spotify(o2020, s2020)
-    # total += len(sh2020['2020'])
-
-    # for song in get_obama_songs_2017():
-    #     if song in get_spotify_playlist(2017):
-    #         total +=1
-    # for song in get_obama_songs_2018():
-    #     if song in get_spotify_playlist(2018):
-    #         total +=1
-    # for song in get_obama_songs_2019():
-    #     if song in get_spotify_playlist(2019):
-    #         total +=1
-    # for song in get_obama_songs_2020():
-    #     if song in get_spotify_playlist(2020):
-    #         total +=1
+    o2020 = get_dict('2020', get_obama_songs_2020())
+    s2020 = get_dict('2020', get_playlist_tracks(2020))
+    sh2020 = compare_obama_to_spotify(o2020, s2020)
+    total += len(sh2020['2020'])
     return("The total amount of songs that Obama has in common with Spotify's hit playlists of 2017, 2018, 2019, and 2020 is " + str(total))
 
 def get_dict(year, lst):
@@ -225,7 +190,7 @@ def compare_obama_to_spotify(obamadict, spotifydict):
 def get_playlist_tracks(year):
     tracks = []
     playlist_id = get_playlist_id(year)
-    results = sp.playlist_tracks(playlist_id, limit = 100)
+    results = sp.playlist_tracks(playlist_id)
     for i in results['items']:
         tracks.append(i['track']['name'])
 
@@ -243,20 +208,51 @@ def create_table(cur, conn):
     #for lists, make into long strings
     cur.execute("DROP TABLE IF EXISTS Songs")
     cur.execute("DROP TABLE IF EXISTS Shared")
-    cur.execute('CREATE TABLE IF NOT EXISTS Songs ("Year" TEXT PRIMARY KEY, "Song Name" TEXT)') #, "Spotify\'s Top Songs" TEXT, "Songs in Common" TEXT, "Number of Songs in Common" INTEGER)')
-    cur.execute('CREATE TABLE IF NOT EXISTS Shared ("Year" TEXT PRIMARY KEY, "Common Songs" TEXT, "Number in Common" INTEGER)')
+    cur.execute('CREATE TABLE IF NOT EXISTS Songs ("SongYear" TEXT, "Name" TEXT)') #, "Spotify\'s Top Songs" TEXT, "Songs in Common" TEXT, "Number of Songs in Common" INTEGER)')
+    cur.execute('CREATE TABLE IF NOT EXISTS Shared ("Year" TEXT, "CommonSongs" TEXT, "NumberInCommon" INTEGER)')
     conn.commit()
 
 #need to work on this
-def insert_obama(obamas_songs, cur, conn):
-    str1 = ','.join(obamas_songs)
-    cur.execute('INSERT INTO Songs (Obama\'s Top Songs) VALUES (str1)')
+def insert_obama_first_25(obama_dict, cur, conn):
+    index = 0
+    #items = obama_dict.values()
+    for key in obama_dict:
+        for x in obama_dict[key]:
+            if index < 25:
+                cur.execute('INSERT INTO Songs (SongYear, Name) VALUES (?,?)', (key, x))
+                index += 1
+            else:
+                insert_obama_rest(index, obama_dict, cur, conn)
+                break
+    conn.commit()
+
+def insert_obama_rest(num, obama_dict, cur, conn):
+    index = num
+    for key in obama_dict:
+        for i in obama_dict[key][25:]:
+            cur.execute('INSERT INTO Songs (SongYear, Name) VALUES (?,?)', (key, i))
+    conn.commit()
+
+def insert_shared(obama_dict, year, cur, conn):
+    sdict = {year: get_playlist_tracks(year)}
+    shared_songs_dict = compare_obama_to_spotify(obama_dict, sdict)
+    for key in shared_songs_dict:
+        for i in shared_songs_dict[key]:
+            cur.execute('INSERT INTO Shared (Year, CommonSongs, NumberInCommon) VALUES (?,?,?)', (key, i, len(shared_songs_dict[key])))
+        conn.commit()
+
+
+    
+    
+    #str1 = ','.join(obamas_songs)
+    #cur.execute('INSERT INTO Songs (Obama\'s Top Songs) VALUES (?,?)')
+
 
 #Calculation
 #calculate total amount of commmonalities between obama and spotfy playlists across ALL years
 
 def main():
-    #print(get_obama_songs_2020())
+    #print(get_obama_songs_2019())
 
     #print(get_playlist_tracks(2017))
 
@@ -265,14 +261,29 @@ def main():
     # spotifydict = {'2017':['On Me by Lil Baby', 'Leaked by Lil Baby'], '2018': ['Savage by Megan Thee Stallion', 'Redemption by Drake'], '2019':['Time Flies by Drake','Sun Came out by Gunna']}
     # print(compare_obama_to_spotify(obamadict, spotifydict))
 
-    obamadict = {'2018': get_obama_songs_2018()}
-    spotifydict = {'2018': get_playlist_tracks(2018)}
-    
+    o2017 = {'2017': get_obama_songs_2017()}
+    o2018 = {'2018': get_obama_songs_2018()}
+    o2019 = {'2019': get_obama_songs_2019()}
+    o2020 = {'2020': get_obama_songs_2020()}
+    spotifydict = {'2019': get_playlist_tracks(2019)}
+
+    # print(obamadict)
+    # print("SPOTIFY -----------------")
+    # print(spotifydict)    
     #print(compare_obama_to_spotify(obamadict, spotifydict))
-    print(total_songs_in_common())
+    #print(total_songs_in_common())
 
     cur, conn = setUpDatabase('commonalities.db')
     create_table(cur, conn)
+    insert_obama_first_25(o2017, cur, conn)
+    insert_obama_first_25(o2018, cur, conn)
+    insert_obama_first_25(o2019, cur, conn)
+    insert_obama_first_25(o2020, cur, conn)
+
+    insert_shared(o2017, 2017, cur, conn)
+    insert_shared(o2018, 2018, cur, conn)
+    insert_shared(o2019, 2019, cur, conn)
+    insert_shared(o2020, 2020, cur, conn)
 
 #starting visualization
 if __name__ == "__main__":
