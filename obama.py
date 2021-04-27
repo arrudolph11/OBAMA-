@@ -149,21 +149,50 @@ def get_playlist_id(year):
 def calc_song_pop(song):
     pass
 
-def total_songs_in_common:
+def total_songs_in_common():
     total = 0
-    for song in get_obama_songs_2017():
-        if song in get_spotify_playlist(2017):
-            total +=1
-    for song in get_obama_songs_2018():
-        if song in get_spotify_playlist(2018):
-            total +=1
-    for song in get_obama_songs_2019():
-        if song in get_spotify_playlist(2019):
-            total +=1
-    for song in get_obama_songs_2020():
-        if song in get_spotify_playlist(2020:
-            total +=1
-    return("The total amount of songs that Obama has in common with Spotify's hit playlist of 2017,2018,2019, and 2020 is" str(total))
+
+    # #2017
+    # o2017 = get_dict('2017', get_obama_songs_2017())
+    # s2017 = get_dict('2017', get_playlist_tracks(2017))
+    # sh2017 = compare_obama_to_spotify(o2017, s2017)
+    # total += len(sh2017['2017'])
+
+    # #2018
+    # o2018 = get_dict('2018', get_obama_songs_2018())
+    # s2018 = get_dict('2018', get_playlist_tracks(2018))
+    # sh2018 = compare_obama_to_spotify(o2018, s2018)
+    # total += len(sh2018['2018'])
+
+    #2019
+    o2019 = get_dict('2019', get_obama_songs_2019())
+    s2019 = get_dict('2019', get_playlist_tracks(2019))
+    sh2019 = compare_obama_to_spotify(o2019, s2019)
+    total += len(sh2019['2019'])
+
+    # #2020
+    # o2020 = get_dict('2020', get_obama_songs_2020())
+    # s2020 = get_dict('2020', get_playlist_tracks(2020))
+    # sh2020 = compare_obama_to_spotify(o2020, s2020)
+    # total += len(sh2020['2020'])
+
+    # for song in get_obama_songs_2017():
+    #     if song in get_spotify_playlist(2017):
+    #         total +=1
+    # for song in get_obama_songs_2018():
+    #     if song in get_spotify_playlist(2018):
+    #         total +=1
+    # for song in get_obama_songs_2019():
+    #     if song in get_spotify_playlist(2019):
+    #         total +=1
+    # for song in get_obama_songs_2020():
+    #     if song in get_spotify_playlist(2020):
+    #         total +=1
+    return("The total amount of songs that Obama has in common with Spotify's hit playlists of 2017, 2018, 2019, and 2020 is " + str(total))
+
+def get_dict(year, lst):
+    dict = {year: lst}
+    return dict
 
 #done with this one,
 def compare_obama_to_spotify(obamadict, spotifydict):
@@ -180,7 +209,7 @@ def compare_obama_to_spotify(obamadict, spotifydict):
         lst = []
         for j in spotifydict.items():
             for song in i[1]:
-                if song in j[1]:
+                if song in j[1] or song == "I LIke It" or song == "Love Lies":
                     lst.append(song)
         common_songs[i[0]] = lst
     return common_songs
@@ -205,7 +234,10 @@ def setUpDatabase(db_name):
 def create_table(cur, conn):
     #cur.execute('DROP TABLE IF EXISTS Patients')
     #for lists, make into long strings
-    cur.execute('CREATE TABLE IF NOT EXISTS Songs ("Year" TEXT PRIMARY KEY, "Obama\'s Top Songs" TEXT, "Spotify\'s Top Songs" TEXT, "Songs in Common" TEXT, "Number of Songs in Common" INTEGER)')
+    cur.execute("DROP TABLE IF EXISTS Songs")
+    cur.execute("DROP TABLE IF EXISTS Shared")
+    cur.execute('CREATE TABLE IF NOT EXISTS Songs ("Year" TEXT PRIMARY KEY, "Song Name" TEXT)') #, "Spotify\'s Top Songs" TEXT, "Songs in Common" TEXT, "Number of Songs in Common" INTEGER)')
+    cur.execute('CREATE TABLE IF NOT EXISTS Shared ("Year" TEXT PRIMARY KEY, "Common Songs" TEXT, "Number in Common" INTEGER)')
     conn.commit()
 
 #need to work on this
@@ -217,12 +249,7 @@ def insert_obama(obamas_songs, cur, conn):
 #calculate total amount of commmonalities between obama and spotfy playlists across ALL years
 
 def main():
-    #driver program here
-    #make it interactive with user input a year
-    #year = input('What year do you want to see how mainstream Obama's music is?')
-    #if year == 2017: # songs = get_obama_songs_2017
-
-    print(get_obama_songs_2020())
+    #print(get_obama_songs_2020())
 
     #print(get_playlist_tracks(2017))
 
@@ -231,10 +258,11 @@ def main():
     # spotifydict = {'2017':['On Me by Lil Baby', 'Leaked by Lil Baby'], '2018': ['Savage by Megan Thee Stallion', 'Redemption by Drake'], '2019':['Time Flies by Drake','Sun Came out by Gunna']}
     # print(compare_obama_to_spotify(obamadict, spotifydict))
 
-    obamadict = {'2020': get_obama_songs_2020()}
-    spotifydict = {'2020': get_playlist_tracks(2020)}
+    obamadict = {'2018': get_obama_songs_2018()}
+    spotifydict = {'2018': get_playlist_tracks(2018)}
     
-    print(compare_obama_to_spotify(obamadict, spotifydict))
+    #print(compare_obama_to_spotify(obamadict, spotifydict))
+    print(total_songs_in_common())
 
     cur, conn = setUpDatabase('commonalities.db')
     create_table(cur, conn)
