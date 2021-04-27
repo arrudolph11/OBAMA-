@@ -12,39 +12,42 @@ import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 import matplotlib
 import matplotlib.pyplot as plt #importing visualization package
+import os
+import sqlite3
 
 
 # #making bar plot
 # matplotlib.pyplot.bar(x, year, width=0.8, )
 # plt.bar(year, obama_and_spotify_commonalities, insertvalues)
-def make_barchart():
-    cur.execute("SELECT * FROM Songs in Common")
-    label_name = []
-    commonalities =[]
-    labels = (label_name[0], label_name1[1], label_name[2], label_name[3]], label_name[4], label_name[5])
-    plt.bar(labels, commonalities, align = "center", color = "lavender", "pink", "lightpink", "purple", "hotpink", "lavenderblush")
-    plt.title("Annual Commonalities Between Obama's Song List and Spotify Playlist")
-    plt.ylabel("Number of Songs in Common")
-    plt.xlabel("Year")
-    plt.savefig("commonalities.png")
-    plt.show()
+# def make_barchart():
+#     cur.execute("SELECT * FROM Songs in Common")
+#     label_name = []
+#     commonalities =[]
+#     labels = (label_name[0], label_name1[1], label_name[2], label_name[3], label_name[4], label_name[5])
+#     plt.bar(labels, commonalities, align = "center", color = "lavender", "pink", "lightpink", "purple", "hotpink", "lavenderblush")
+#     plt.title("Annual Commonalities Between Obama's Song List and Spotify Playlist")
+#     plt.ylabel("Number of Songs in Common")
+#     plt.xlabel("Year")
+#     plt.savefig("commonalities.png")
+#     plt.show()
 
-    return((label_name[0], commonalities[0]), (label_name[1], commonalities[1]), (label_name[2], commonalities[2]), (label_name[3], commonalities[3]), (label_name[4], commonalities[4]), (commonalities[5], label_name[5]))
+#     return((label_name[0], commonalities[0]), (label_name[1], commonalities[1]), (label_name[2], commonalities[2]), (label_name[3], commonalities[3]), (label_name[4], commonalities[4]), (commonalities[5], label_name[5]))
 
 #create scatterplot
-fig, ax = plt.subplots()
-for color in ['tab:blue']:
-    x = #choose1
-    y = #choose2
-    ax.scatter(x, y, c=color, label=color,
-                alpha=0.3, edgecolors='none')
-    plt.title("INSERT TITLE")
-    plt.xlabel("INSERT LABEL")
-    plt.ylabel("INSERT LABEL")
-    ax.legend()
-    ax.grid(True)
-    plt.savefig("Scatterplot__")
-    plt.show()
+# def make_scatterplot():
+#     fig, ax = plt.subplots()
+#     for color in ['tab:blue']:
+#         # x = #choose1
+#         # y = #choose2
+#       ax.scatter(x, y, c=color, label=color,
+#                 alpha=0.3, edgecolors='none')
+#     plt.title("INSERT TITLE")
+#     plt.xlabel("INSERT LABEL")
+#     plt.ylabel("INSERT LABEL")
+#     ax.legend()
+#     ax.grid(True)
+#     plt.savefig("Scatterplot__")
+#     plt.show()
     
 
 
@@ -104,7 +107,7 @@ def get_obama_songs_2019():
             obamas_songs.append(li.text)
     #return obamas_songs
         regged = []
-        reg_exp = r'\"(\b.+\b)\"\sby\s.+'
+        reg_exp = r'\"(.+)\"\s'
         for i in obamas_songs:
             x = re.findall(reg_exp, i)
             for i in x:
@@ -119,7 +122,13 @@ def get_obama_songs_2020():
         first_song = soup.find_all('div', class_ = 'zn-body__paragraph')
         for i in first_song:
             obamas_songs.append(i.text)
-        return obamas_songs[3:]
+        regged = []
+        reg_exp = r'\"(.+)\"\s'
+        for i in obamas_songs[3:]:
+            x = re.findall(reg_exp, i)
+            for i in x:
+                regged.append(i)
+    return regged
 
 
 #use requests, Spotify API gets spotify playlist for each year
@@ -171,6 +180,11 @@ def get_playlist_tracks(year):
     return tracks
 
 #making database
+def setUpDatabase(db_name):
+    path = os.path.dirname(os.path.abspath(__file__))
+    conn = sqlite3.connect(path+'/'+db_name)
+    cur = conn.cursor()
+    return cur, conn
 
 def create_table(cur, conn):
     #cur.execute('DROP TABLE IF EXISTS Patients')
@@ -192,7 +206,7 @@ def main():
     #year = input('What year do you want to see how mainstream Obama's music is?')
     #if year == 2017: # songs = get_obama_songs_2017
 
-    print(get_obama_songs_2019())
+    print(get_obama_songs_2020())
 
     #print(get_playlist_tracks(2017))
 
@@ -201,11 +215,15 @@ def main():
     # spotifydict = {'2017':['On Me by Lil Baby', 'Leaked by Lil Baby'], '2018': ['Savage by Megan Thee Stallion', 'Redemption by Drake'], '2019':['Time Flies by Drake','Sun Came out by Gunna']}
     # print(compare_obama_to_spotify(obamadict, spotifydict))
 
-    obamadict = {'2019': get_obama_songs_2019()}
-    spotifydict = {'2019': get_playlist_tracks(2019)}
-
+    obamadict = {'2020': get_obama_songs_2020()}
+    spotifydict = {'2020': get_playlist_tracks(2020)}
+    
     print(compare_obama_to_spotify(obamadict, spotifydict))
+
+    cur, conn = setUpDatabase('commonalities.db')
+    create_table(cur, conn)
 
 #starting visualization
 if __name__ == "__main__":
     main()
+
