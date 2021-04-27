@@ -149,6 +149,22 @@ def get_playlist_id(year):
 def calc_song_pop(song):
     pass
 
+def total_songs_in_common:
+    total = 0
+    for song in get_obama_songs_2017():
+        if song in get_spotify_playlist(2017):
+            total +=1
+    for song in get_obama_songs_2018():
+        if song in get_spotify_playlist(2018):
+            total +=1
+    for song in get_obama_songs_2019():
+        if song in get_spotify_playlist(2019):
+            total +=1
+    for song in get_obama_songs_2020():
+        if song in get_spotify_playlist(2020:
+            total +=1
+    return("The total amount of songs that Obama has in common with Spotify's hit playlist of 2017,2018,2019, and 2020 is" str(total))
+
 #done with this one,
 def compare_obama_to_spotify(obamadict, spotifydict):
     #obamadict is a dictionary where the key is the year, and the values are 
