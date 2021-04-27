@@ -15,6 +15,9 @@ import matplotlib.pyplot as plt #importing visualization package
 import os
 import sqlite3
 
+""" 
+Creating a Bar Plot where the x-axis is the Year and the y-axis is the amount (count) of songs Obama has in Commmon with Spotify's playlist the year
+"""
 
 # #making bar plot
 # matplotlib.pyplot.bar(x, year, width=0.8, )
@@ -33,6 +36,10 @@ import sqlite3
 
 #     return((label_name[0], commonalities[0]), (label_name[1], commonalities[1]), (label_name[2], commonalities[2]), (label_name[3], commonalities[3]), (label_name[4], commonalities[4]), (commonalities[5], label_name[5]))
 
+""" 
+Creating a Scatter Plot where the x-axis is the year and the y-axis is the percentage of Obama's songs are in Spotify's playlist that year.
+
+"""
 #create scatterplot
 # def make_scatterplot():
 #     fig, ax = plt.subplots()
