@@ -80,25 +80,29 @@ def make_char_scatterplot(cur):
     plt.scatter(common_years, commons_chars, c = 'pink')
     plt.show()
     
- """
+"""
 Writing percentage calculation to a text file
 """
-filename = open("calculationfile.txt", "w")
-filename.write("We calculated the percentage of songs that are in Obama's song list in a given year out of the songs in Spotify's playlist that year.")
-filename.write('\n')
-percentages = []
-numcommon = []
-years = ['2017', '2018', '2019', '2020']
-cur.execute('SELECT Year, NumberInCommon, LengthOfSpotifyPlaylist FROM Shared')
-for row in cur:
-    if row[0] not in years:
-        years.append(row[0])
-        numcommon.append(row[1])
-        percentages.append(row[1]/row[2])
-for x in percentages:
-    filename.write("In {} , {} of Obama's favorite songs are in Spotify's Top Hits Playlist".format(????))
+def writefile(cur):
+
+    filename = open("calculationfile.txt", "w")
+    filename.write("We calculated the percentage of songs that are in Obama's song list in a given year out of the songs in Spotify's playlist that year.")
     filename.write('\n')
-filename.close()
+    percentages = []
+    numcommon = []
+    years = [2017, 2018, 2019, 2020]
+    cur.execute('SELECT Year, NumberInCommon, LengthOfSpotifyPlaylist FROM Shared')
+    for row in cur:
+        if row[0] not in years:
+            years.append(row[0])
+            numcommon.append(row[1])
+            percentages.append(row[1]/row[2])
+    year_count = 0
+    for x in percentages:
+        filename.write("In {} , {} of Obama's favorite songs are in Spotify's Top Hits Playlist".format(years[year_count], x))
+        filename.write('\n')
+        year_count += 1
+    filename.close()
 
 
 client_id = 'd349d9ffeed74f7894652895e7e25437'
