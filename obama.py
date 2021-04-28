@@ -73,6 +73,8 @@ def make_scatterplot(cur):
     plt.savefig("ScatterplotPercentages")
     plt.show()
     
+    def make_char_scatterplot(cur):
+        
 
 
 client_id = 'd349d9ffeed74f7894652895e7e25437'
