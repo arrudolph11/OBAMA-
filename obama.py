@@ -73,8 +73,27 @@ def make_scatterplot(cur):
     plt.savefig("ScatterplotPercentages")
     plt.show()
     
-    def make_char_scatterplot(cur):
-        
+def make_char_scatterplot(cur):
+    songs_chars = []
+    song_years = []
+    #songs_nums = [1, 2, 3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21]
+    commons_chars = []
+    common_years = []
+    cur.execute('SELECT Songs.Name, Songs.SongYear, Shared.CommonSongs, Shared.Year FROM Songs JOIN Shared ON Songs.SongYear = Shared.Year')
+    for row in cur:
+        songs_chars.append(len(row[0]))
+        song_years.append(int(row[1]))
+        commons_chars.append(len(row[2]))
+        common_years.append(int(row[3]))
+    
+
+    plt.scatter(song_years, songs_chars, c = 'blue')
+    plt.scatter(common_years, commons_chars, c = 'pink')
+    plt.show()
+
+
+
+
 
 
 client_id = 'd349d9ffeed74f7894652895e7e25437'
@@ -293,7 +312,8 @@ def main():
     insert_shared(o2020, 2020, cur, conn)
 
     # make_barchart(cur)
-    make_scatterplot(cur)
+    #make_scatterplot(cur)
+    make_char_scatterplot(cur)
 
 
 
