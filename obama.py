@@ -14,27 +14,26 @@ import matplotlib
 import matplotlib.pyplot as plt #importing visualization package
 import os
 import sqlite3
-
 """ 
 Creating a Bar Plot where the x-axis is the Year and the y-axis is the amount (count) of songs Obama has in Commmon with Spotify's playlist the year
 """
 
 # #making bar plot
-# matplotlib.pyplot.bar(x, year, width=0.8, )
-# plt.bar(year, obama_and_spotify_commonalities, insertvalues)
-# def make_barchart():
-#     cur.execute("SELECT * FROM Songs in Common")
-#     label_name = []
-#     commonalities =[]
-#     labels = (label_name[0], label_name1[1], label_name[2], label_name[3], label_name[4], label_name[5])
-#     plt.bar(labels, commonalities, align = "center", color = "lavender", "pink", "lightpink", "purple", "hotpink", "lavenderblush")
-#     plt.title("Annual Commonalities Between Obama's Song List and Spotify Playlist")
-#     plt.ylabel("Number of Songs in Common")
-#     plt.xlabel("Year")
-#     plt.savefig("commonalities.png")
-#     plt.show()
+matplotlib.pyplot.bar(x, Year, width=0.8, )
+plt.bar(year, Num, insertvalues)
+def make_barchart():
+    cur.execute("SELECT * FROM CommonSongs")
+    label_name = []
+    commonalities =[]
+    labels = (label_name[0], label_name1[1], label_name[2], label_name[3], label_name[4])
+    plt.bar(labels, commonalities, align = "center", color = "lavender", "pink", "lightpink", "purple", "hotpink")
+    plt.title("Annual Commonalities Between Obama's Song List and Spotify Playlist")
+    plt.ylabel("Number of Songs in Common")
+    plt.xlabel("Year")
+    plt.savefig("commonalities.png")
+    plt.show()
 
-#     return((label_name[0], commonalities[0]), (label_name[1], commonalities[1]), (label_name[2], commonalities[2]), (label_name[3], commonalities[3]), (label_name[4], commonalities[4]), (commonalities[5], label_name[5]))
+    return((label_name[0], commonalities[0]), (label_name[1], commonalities[1]), (label_name[2], commonalities[2]), (label_name[3], commonalities[3]), (label_name[4], commonalities[4]))
 
 """ 
 Creating a Scatter Plot where the x-axis is the year and the y-axis is the percentage of Obama's songs are in Spotify's playlist that year.
