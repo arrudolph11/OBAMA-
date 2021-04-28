@@ -75,10 +75,10 @@ def make_char_scatterplot(cur):
         commons_chars.append(len(row[2]))
         common_years.append(int(row[3]))
     
-
     plt.scatter(song_years, songs_chars, c = 'blue')
     plt.scatter(common_years, commons_chars, c = 'pink')
     plt.show()
+<<<<<<< Updated upstream
     
 """
 Writing percentage calculation to a text file
@@ -104,6 +104,8 @@ def writefile(cur):
         year_count += 1
     filename.close()
 
+=======
+>>>>>>> Stashed changes
 
 client_id = 'd349d9ffeed74f7894652895e7e25437'
 client_secret = 'd89d0fbc75bf40aa8d717fd09564b98d'
