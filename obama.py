@@ -14,15 +14,12 @@ import matplotlib
 import matplotlib.pyplot as plt #importing visualization package
 import os
 import sqlite3
+
 """ 
 Creating a Bar Plot where the x-axis is the Year and the y-axis is the amount (count) of songs Obama has in Commmon with Spotify's playlist the year
 """
 
-
-#plt.bar(year, Num, insertvalues)
 def make_barchart(cur):
-    # #making bar plot
-    #matplotlib.pyplot.bar(x, Year, width=0.8, )
     commonalities = []
     years = []
     cur.execute("SELECT Year, NumberInCommon FROM Shared")
@@ -45,7 +42,6 @@ def make_barchart(cur):
 Creating a Scatter Plot where the x-axis is the year and the y-axis is the percentage of Obama's songs are in Spotify's playlist that year.
 
 """
-#create scatterplot
 def make_scatterplot(cur):
     percentages = []
     numcommon = []
@@ -56,14 +52,7 @@ def make_scatterplot(cur):
             years.append(row[0])
             numcommon.append(row[1])
             percentages.append(row[1]/row[2])
-
-
-    # fig, ax = plt.subplots()
-    # for color in ['tab:blue']:
-    #      x = 
-    #      y = #choose2
-    #   ax.scatter(x, y, c=color, label=color,
-    #             alpha=0.3, edgecolors='none')
+            
     plt.scatter(years, percentages)
     plt.title("Percentage of Songs Obama has in Common with Spotify's Top Hits Playlist")
     plt.xlabel("Year")
@@ -91,20 +80,15 @@ def make_char_scatterplot(cur):
     plt.scatter(common_years, commons_chars, c = 'pink')
     plt.show()
 
-
-
-
-
-
 client_id = 'd349d9ffeed74f7894652895e7e25437'
 client_secret = 'd89d0fbc75bf40aa8d717fd09564b98d'
 
 client_credentials_manager = SpotifyClientCredentials(client_id, client_secret)
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
-#honestly might need a function for each year, since the source isn't in the same format
-#his playlist for 2016 would be hard to scrape I think, so maybe we should do 2017-2020 at least for now
-
+"""
+Getting Obama's favorite songs from 2017
+"""
 def get_obama_songs_2017():
     response = requests.get('https://www.businessinsider.com/obama-favorite-songs-2017-2018-1#blessed-by-daniel-caesar-3')
     if response.ok:
@@ -123,7 +107,9 @@ def get_obama_songs_2017():
                 regged.append(i)
     return regged
 
-
+"""
+Getting Obama's favorite songs from 2018
+"""
 def get_obama_songs_2018():
     response = requests.get('https://www.businessinsider.com/obama-favorite-songs-2018-12')
     if response.ok:
@@ -140,14 +126,18 @@ def get_obama_songs_2018():
             for i in x:
                 regged.append(i)
     return regged
-        
+"""
+Getting Obama's favorite songs from 2019.
+"""
 def get_obama_songs_2019():
     tracks = []
     results = sp.playlist_tracks('37i9dQZF1DX9uhxIrnqGy3', limit = 100)
     for i in results['items']:
         tracks.append(i['track']['name'])
     return tracks
-
+"""
+Getting Obama's favorite songs from 2020
+"""
 def get_obama_songs_2020():
     response = requests.get('https://www.cnn.com/2020/12/19/politics/barack-obama-2020-favorite-songs/index.html')
     if response.ok:
@@ -177,7 +167,7 @@ def total_songs_in_common():
     sh2017 = compare_obama_to_spotify(o2017, s2017)
     total += len(sh2017['2017'])
 
-    # #2018
+    #2018
     o2018 = get_dict('2018', get_obama_songs_2018())
     s2018 = get_dict('2018', get_playlist_tracks(2018))
     sh2018 = compare_obama_to_spotify(o2018, s2018)
@@ -200,7 +190,7 @@ def get_dict(year, lst):
     dict = {year: lst}
     return dict
 
-#done with this one,
+
 def compare_obama_to_spotify(obamadict, spotifydict):
     #obamadict is a dictionary where the key is the year, and the values are 
     #obamas songs for that year
