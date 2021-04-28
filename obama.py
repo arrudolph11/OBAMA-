@@ -57,15 +57,12 @@ def make_scatterplot(cur):
     plt.title("Percentage of Songs Obama has in Common with Spotify's Top Hits Playlist")
     plt.xlabel("Year")
     plt.ylabel("Percentage of Songs Shared")
-    # ax.legend()
-    # ax.grid(True)
     plt.savefig("ScatterplotPercentages")
     plt.show()
     
 def make_char_scatterplot(cur):
     songs_chars = []
     song_years = []
-    #songs_nums = [1, 2, 3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21]
     commons_chars = []
     common_years = []
     cur.execute('SELECT Songs.Name, Songs.SongYear, Shared.CommonSongs, Shared.Year FROM Songs JOIN Shared ON Songs.SongYear = Shared.Year')
@@ -251,10 +248,6 @@ def setUpDatabase(db_name):
     return cur, conn
 
 def create_table(cur, conn):
-    #cur.execute('DROP TABLE IF EXISTS Patients')
-    #for lists, make into long strings
-    cur.execute("DROP TABLE IF EXISTS Songs")
-    cur.execute("DROP TABLE IF EXISTS Shared")
     cur.execute('CREATE TABLE IF NOT EXISTS Songs ("SongYear" TEXT, "Name" TEXT)') #, "Spotify\'s Top Songs" TEXT, "Songs in Common" TEXT, "Number of Songs in Common" INTEGER)')
     cur.execute('CREATE TABLE IF NOT EXISTS Shared ("Year" TEXT, "CommonSongs" TEXT, "NumberInCommon" INTEGER, LengthOfSpotifyPlaylist INTEGER)')
     conn.commit()
@@ -306,23 +299,18 @@ def main():
     o2020 = {'2020': get_obama_songs_2020()}
     spotifydict = {'2019': get_playlist_tracks(2019)}
 
-    # print(obamadict)
-    # print("SPOTIFY -----------------")
-    # print(spotifydict)    
-    #print(compare_obama_to_spotify(obamadict, spotifydict))
-    #print(total_songs_in_common())
 
     cur, conn = setUpDatabase('commonalities.db')
     create_table(cur, conn)
-    insert_obama_first_25(o2017, cur, conn)
-    insert_obama_first_25(o2018, cur, conn)
-    insert_obama_first_25(o2019, cur, conn)
-    insert_obama_first_25(o2020, cur, conn)
+    # insert_obama_first_25(o2017, cur, conn)
+    # insert_obama_first_25(o2018, cur, conn)
+    # insert_obama_first_25(o2019, cur, conn)
+    # insert_obama_first_25(o2020, cur, conn)
 
-    insert_shared(o2017, 2017, cur, conn)
-    insert_shared(o2018, 2018, cur, conn)
-    insert_shared(o2019, 2019, cur, conn)
-    insert_shared(o2020, 2020, cur, conn)
+    # insert_shared(o2017, 2017, cur, conn)
+    # insert_shared(o2018, 2018, cur, conn)
+    # insert_shared(o2019, 2019, cur, conn)
+    # insert_shared(o2020, 2020, cur, conn)
 
     # make_barchart(cur)
     #make_scatterplot(cur)
