@@ -18,15 +18,21 @@ import sqlite3
 Creating a Bar Plot where the x-axis is the Year and the y-axis is the amount (count) of songs Obama has in Commmon with Spotify's playlist the year
 """
 
-# #making bar plot
-matplotlib.pyplot.bar(x, Year, width=0.8, )
-plt.bar(year, Num, insertvalues)
-def make_barchart():
-    cur.execute("SELECT * FROM CommonSongs")
-    label_name = []
-    commonalities =[]
-    labels = (label_name[0], label_name1[1], label_name[2], label_name[3], label_name[4])
-    plt.bar(labels, commonalities, align = "center", color = "lavender", "pink", "lightpink", "purple", "hotpink")
+
+#plt.bar(year, Num, insertvalues)
+def make_barchart(cur):
+    # #making bar plot
+    #matplotlib.pyplot.bar(x, Year, width=0.8, )
+    commonalities = []
+    years = []
+    cur.execute("SELECT Year, NumberInCommon FROM Shared")
+    for row in cur:
+        if row[0] not in years:
+            years.append(row[0])
+            commonalities.append(row[1])
+    label_name = ['2017', '2018', '2019', '2020']
+    labels = (label_name[0], label_name[1], label_name[2], label_name[3])
+    plt.bar(labels, commonalities, align = "center", color = ["lavender", "pink", "lightpink", "purple", "hotpink"])
     plt.title("Annual Commonalities Between Obama's Song List and Spotify Playlist")
     plt.ylabel("Number of Songs in Common")
     plt.xlabel("Year")
@@ -238,23 +244,11 @@ def insert_shared(obama_dict, year, cur, conn):
     for key in shared_songs_dict:
         for i in shared_songs_dict[key]:
             cur.execute('INSERT INTO Shared (Year, CommonSongs, NumberInCommon) VALUES (?,?,?)', (key, i, len(shared_songs_dict[key])))
-        conn.commit()
-
-
-    
-    
-    #str1 = ','.join(obamas_songs)
-    #cur.execute('INSERT INTO Songs (Obama\'s Top Songs) VALUES (?,?)')
-
-
-#Calculation
-#calculate total amount of commmonalities between obama and spotfy playlists across ALL years
+    if year == 2020:
+        cur.execute('INSERT INTO Shared (Year, CommonSongs, NumberInCommon) VALUES (?,?,?)', (2020, 'No Common Songs', 0))
+    conn.commit()
 
 def main():
-    #print(get_obama_songs_2019())
-
-    #print(get_playlist_tracks(2017))
-
     #test compare_obama_to_spotify
     # obamadict = {'2017':['On Me by Lil Baby', 'Leaked by Lil Baby'], '2018': ['Errbody by Lil Baby', 'Savage by Megan Thee Stallion'], '2019':['Sun Came out by Gunna','Time Flies by Drake']}
     # spotifydict = {'2017':['On Me by Lil Baby', 'Leaked by Lil Baby'], '2018': ['Savage by Megan Thee Stallion', 'Redemption by Drake'], '2019':['Time Flies by Drake','Sun Came out by Gunna']}
@@ -283,6 +277,10 @@ def main():
     insert_shared(o2018, 2018, cur, conn)
     insert_shared(o2019, 2019, cur, conn)
     insert_shared(o2020, 2020, cur, conn)
+
+    make_barchart(cur)
+
+
 
 #starting visualization
 if __name__ == "__main__":
