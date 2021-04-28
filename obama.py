@@ -46,20 +46,32 @@ Creating a Scatter Plot where the x-axis is the year and the y-axis is the perce
 
 """
 #create scatterplot
-# def make_scatterplot():
-#     fig, ax = plt.subplots()
-#     for color in ['tab:blue']:
-#         # x = #choose1
-#         # y = #choose2
-#       ax.scatter(x, y, c=color, label=color,
-#                 alpha=0.3, edgecolors='none')
-#     plt.title("INSERT TITLE")
-#     plt.xlabel("INSERT LABEL")
-#     plt.ylabel("INSERT LABEL")
-#     ax.legend()
-#     ax.grid(True)
-#     plt.savefig("Scatterplot__")
-#     plt.show()
+def make_scatterplot(cur):
+    percentages = []
+    numcommon = []
+    years = [] #'2017', '2018', '2019', '2020']
+    cur.execute('SELECT Year, NumberInCommon, LengthOfSpotifyPlaylist FROM Shared')
+    for row in cur:
+        if row[0] not in years:
+            years.append(row[0])
+            numcommon.append(row[1])
+            percentages.append(row[1]/row[2])
+
+
+    # fig, ax = plt.subplots()
+    # for color in ['tab:blue']:
+    #      x = 
+    #      y = #choose2
+    #   ax.scatter(x, y, c=color, label=color,
+    #             alpha=0.3, edgecolors='none')
+    plt.scatter(years, percentages)
+    plt.title("Percentage of Songs Obama has in Common with Spotify's Top Hits Playlist")
+    plt.xlabel("Year")
+    plt.ylabel("Percentage of Songs Shared")
+    # ax.legend()
+    # ax.grid(True)
+    plt.savefig("ScatterplotPercentages")
+    plt.show()
     
 
 
@@ -134,10 +146,6 @@ def get_obama_songs_2020():
 def get_playlist_id(year):
     switcher = {2017: '37i9dQZF1DWTE7dVUebpUW', 2018: '37i9dQZF1DX1HUbZS4LEyL', 2019: '37i9dQZF1DWVRSukIED0e9', 2020: '37i9dQZF1DX7Jl5KP2eZaS'}
     return switcher.get(year, "Invalid year")
-
-#idk calculate popularity of each song, based on either the score from Spotify API or we could do the number rank it is on the Spotify playlist
-def calc_song_pop(song):
-    pass
 
 def total_songs_in_common():
     total = 0
@@ -214,7 +222,7 @@ def create_table(cur, conn):
     cur.execute("DROP TABLE IF EXISTS Songs")
     cur.execute("DROP TABLE IF EXISTS Shared")
     cur.execute('CREATE TABLE IF NOT EXISTS Songs ("SongYear" TEXT, "Name" TEXT)') #, "Spotify\'s Top Songs" TEXT, "Songs in Common" TEXT, "Number of Songs in Common" INTEGER)')
-    cur.execute('CREATE TABLE IF NOT EXISTS Shared ("Year" TEXT, "CommonSongs" TEXT, "NumberInCommon" INTEGER)')
+    cur.execute('CREATE TABLE IF NOT EXISTS Shared ("Year" TEXT, "CommonSongs" TEXT, "NumberInCommon" INTEGER, LengthOfSpotifyPlaylist INTEGER)')
     conn.commit()
 
 #need to work on this
@@ -241,11 +249,15 @@ def insert_obama_rest(num, obama_dict, cur, conn):
 def insert_shared(obama_dict, year, cur, conn):
     sdict = {year: get_playlist_tracks(year)}
     shared_songs_dict = compare_obama_to_spotify(obama_dict, sdict)
+    splaylists_lengths = [len(get_playlist_tracks(2017)), len(get_playlist_tracks(2018)), len(get_playlist_tracks(2019)), len(get_playlist_tracks(2020))]
     for key in shared_songs_dict:
         for i in shared_songs_dict[key]:
-            cur.execute('INSERT INTO Shared (Year, CommonSongs, NumberInCommon) VALUES (?,?,?)', (key, i, len(shared_songs_dict[key])))
+            index = 0
+            cur.execute('INSERT INTO Shared (Year, CommonSongs, NumberInCommon, LengthOfSpotifyPlaylist) VALUES (?,?,?,?)', (key, i, len(shared_songs_dict[key]), splaylists_lengths[index]))
+            index += 1
     if year == 2020:
-        cur.execute('INSERT INTO Shared (Year, CommonSongs, NumberInCommon) VALUES (?,?,?)', (2020, 'No Common Songs', 0))
+        cur.execute('INSERT INTO Shared (Year, CommonSongs, NumberInCommon, LengthOfSpotifyPlaylist) VALUES (?,?,?,?)', (2020, 'No Common Songs', 0, 100))
+
     conn.commit()
 
 def main():
@@ -278,7 +290,8 @@ def main():
     insert_shared(o2019, 2019, cur, conn)
     insert_shared(o2020, 2020, cur, conn)
 
-    make_barchart(cur)
+    # make_barchart(cur)
+    make_scatterplot(cur)
 
 
 
