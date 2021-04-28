@@ -1,0 +1,5 @@
+We calculated the percentage of songs that are in Obama's song list in a given year out of the songs in Spotify's playlist that year.
+In 2017 , 4.0% of Obama's favorite songs are in Spotify's Top Hits Playlist
+In 2018 , 2.0% of Obama's favorite songs are in Spotify's Top Hits Playlist
+In 2019 , 2.0% of Obama's favorite songs are in Spotify's Top Hits Playlist
+In 2020 , 0.0% of Obama's favorite songs are in Spotify's Top Hits Playlist

@@ -98,7 +98,7 @@ def writefile(cur):
             percentages.append(row[1]/row[2])
     year_count = 0
     for x in percentages:
-        filename.write("In {} , {} of Obama's favorite songs are in Spotify's Top Hits Playlist".format(years[year_count], x))
+        filename.write("In {} , {}% of Obama's favorite songs are in Spotify's Top Hits Playlist".format(years[year_count], x*100))
         filename.write('\n')
         year_count += 1
     filename.close()
@@ -326,7 +326,8 @@ def main():
 
     # make_barchart(cur)
     #make_scatterplot(cur)
-    make_char_scatterplot(cur)
+    #make_char_scatterplot(cur)
+    writefile(cur)
 
 
 
